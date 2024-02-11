@@ -326,7 +326,7 @@ fork(void)
 }
 
 //
-int pthread_create(int id, void *thread_function, void *arg){
+int thread_create(int id, void *thread_function, void *arg){
 struct proc *p = myproc();
 struct proc *np;
 int i, pid;
