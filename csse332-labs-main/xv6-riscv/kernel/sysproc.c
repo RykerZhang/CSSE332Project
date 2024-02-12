@@ -92,9 +92,19 @@ sys_uptime(void)
 
 uint64 sys_spoon(void)
 {
-uint64 addr;
-argaddr(0, &addr);
-return spoon ((void*) addr);
+  uint64 addr;
+  argaddr(0, &addr);
+  return spoon ((void*) addr);
 
+
+}
+uint64 sys_thread_create(void){
+  uint64 id;
+  uint64 thread_function;
+  uint64 args;
+  argaddr(0, &id);
+  argaddr(1, &thread_function);
+  argaddr(2, &args);
+  return thread_create(id, (void*)thread_function, (void*)args); 
 
 }
