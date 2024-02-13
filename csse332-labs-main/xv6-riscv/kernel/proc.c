@@ -338,7 +338,7 @@ if ((np = allocproc()) == 0){
 
 
   // Copy user memory from parent to child.
-  if(uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){
+  if(t_uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){
     freeproc(np);
     release(&np->lock);
     return -1;
@@ -349,7 +349,7 @@ if ((np = allocproc()) == 0){
   *(np->trapframe) = *(p->trapframe);
 
   // Cause fork to return 0 in the child.
-  np->trapframe->a0 = 0;
+  np->trapframe->a0 = (uint64)arg;
 
   // increment reference counts on open file descriptors.
   for(i = 0; i < NOFILE; i++)
