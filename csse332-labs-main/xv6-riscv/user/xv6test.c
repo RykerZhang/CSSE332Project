@@ -7,25 +7,35 @@
 #include "kernel/syscall.h"
 #include "kernel/memlayout.h"
 #include "kernel/riscv.h"
+#include <stddef.h>
 
 int g = 8800;
 
-void helloWorld(void *arg){
+void helloWorld(void *arg, void *arg2, void *arg3){
 	
-	printf("arg: %d\n", *(int *)arg);
+	printf("arg1: %d arg2: %d arg3: %d\n", *(int *)arg, *(int *)arg2, *(int *)arg3);
+	printf("child: %d:\n", g);
 	g++;
-	return;
+	sleep(5);
+	printf("child new %d:\n", g);
+	exit(1);
 }
 
 
 int main(int argc, char **argv){
 	int test = 100;
-	
-	thread_create(1, helloWorld, &test);
+	int test2 = 79;
+	int test3 = 69;
+
+	thread_create(1, helloWorld, &test, &test2, &test3);
+	thread_create(2, helloWorld, &test, &test2, &test3);
 	sleep(15);
 	//thread_create(2, helloWorld, 0);
 
 	//sleep(10);
-	//printf("%d\n", g);
+	//if(g == 8800){
+	//	printf();
+	//}
+	printf("%d\n", g);
 	return 1;
 }

@@ -102,9 +102,13 @@ uint64 sys_thread_create(void){
   uint64 id;
   uint64 thread_function;
   uint64 args;
+  uint64 args2;
+  uint64 args3;
   argaddr(0, &id);
   argaddr(1, &thread_function);
   argaddr(2, &args);
-  return thread_create(id, (void*)thread_function, (void*)args); 
+  argaddr(3, &args2);
+  argaddr(4, &args3);
+  return thread_create(id, (void*)thread_function, (void*)args, (void*)args2, (void*)args3); 
 
 }

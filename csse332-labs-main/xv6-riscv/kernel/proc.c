@@ -5,6 +5,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include <stddef.h>
 
 struct cpu cpus[NCPU];
 
@@ -326,7 +327,7 @@ fork(void)
 }
 
 //
-int thread_create(int id, void *thread_function, void *arg){
+int thread_create(int id, void *thread_function, void *arg, void  *arg2, void *arg3){
 struct proc *p = myproc();
 struct proc *np;
 int i, pid;
@@ -349,7 +350,13 @@ if ((np = allocproc()) == 0){
   *(np->trapframe) = *(p->trapframe);
 
   // Cause fork to return 0 in the child.
-  np->trapframe->a0 = (uint64)arg;
+  	np->trapframe->a0 = (uint64)arg;
+  	if(arg2 != NULL){
+  		np->trapframe->a1 = (uint64) arg2;
+  	}
+	if(arg3 != NULL){
+		np->trapframe->a2 = (uint64) arg3;
+	}
 
   // increment reference counts on open file descriptors.
   for(i = 0; i < NOFILE; i++)
