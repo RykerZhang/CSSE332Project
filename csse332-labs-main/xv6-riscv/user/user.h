@@ -24,6 +24,7 @@ int sleep(int);
 int uptime(void);
 int spoon(void*);
 int thread_create(int, void*, void*, void*, void*);
+int t_exit(int);
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);

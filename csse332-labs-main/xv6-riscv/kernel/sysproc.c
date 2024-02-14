@@ -112,3 +112,10 @@ uint64 sys_thread_create(void){
   return thread_create(id, (void*)thread_function, (void*)args, (void*)args2, (void*)args3); 
 
 }
+
+uint64 sys_t_exit(void){
+  int status;
+  argint(0, &status);
+  t_exit(status);
+  return 0;
+}

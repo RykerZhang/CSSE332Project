@@ -103,7 +103,7 @@ extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_spoon(void);
 extern uint64 sys_thread_create(void);
-
+extern uint64 sys_t_exit(void);
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
 static uint64 (*syscalls[])(void) = {
@@ -130,6 +130,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_spoon]   sys_spoon,
 [SYS_thread_create] sys_thread_create,
+[SYS_t_exit] sys_t_exit,
 };
 
 void

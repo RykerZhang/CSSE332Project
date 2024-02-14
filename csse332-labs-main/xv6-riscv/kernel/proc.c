@@ -453,6 +453,49 @@ exit(int status)
   panic("zombie exit");
 }
 
+void
+t_exit(int status)
+{
+  struct proc *p = myproc();
+
+  if(p == initproc)
+    panic("init exiting");
+
+  // Close all open files.
+  for(int fd = 0; fd < NOFILE; fd++){
+    if(p->ofile[fd]){
+      struct file *f = p->ofile[fd];
+      fileclose(f);
+      p->ofile[fd] = 0;
+    }
+  }
+
+  begin_op();
+  iput(p->cwd);
+  end_op();
+  p->cwd = 0;
+
+  acquire(&wait_lock);
+
+  // Give any children to init.
+  //reparent(p);
+
+  // Parent might be sleeping in wait().
+  //wakeup(p->parent);
+  
+  acquire(&p->lock);
+
+  p->xstate = status;
+  p->state = ZOMBIE;
+  //freeproc(p);
+  release(&wait_lock);
+
+  // Jump into the scheduler, never to return.
+  sched();
+	
+  panic("zombie exit");
+}
+
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
 int
