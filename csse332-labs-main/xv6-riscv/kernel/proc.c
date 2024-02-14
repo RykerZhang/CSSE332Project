@@ -347,7 +347,7 @@ if ((np = allocproc()) == 0){
   np->sz = p->sz;
 
   // copy saved user registers.
-  *(np->trapframe) = *(p->trapframe);
+  //*(np->trapframe) = *(p->trapframe);
 
   // Cause fork to return 0 in the child.
   	np->trapframe->a0 = (uint64)arg;
@@ -370,10 +370,13 @@ if ((np = allocproc()) == 0){
 
 
   np->trapframe->epc = (uint64)thread_function;
-
-
+	
+	
+	np->trapframe->sp = p->trapframe->sp - 128*id;
 
   release(&np->lock);
+	
+
 
   acquire(&wait_lock);
   np->parent = p;

@@ -12,24 +12,28 @@
 int g = 8800;
 
 void helloWorld(void *arg, void *arg2, void *arg3){
-	
 	printf("arg1: %d arg2: %d arg3: %d\n", *(int *)arg, *(int *)arg2, *(int *)arg3);
-	printf("child: %d:\n", g);
+	//printf("child: %d:\n", g);
 	g++;
-	sleep(5);
-	printf("child new %d:\n", g);
-	exit(1);
+	//printf("child new %d:\n", g);
+	exit(0);
 }
 
 
-int main(int argc, char **argv){
+void main(int argc, char **argv){
+
+	
 	int test = 100;
 	int test2 = 79;
 	int test3 = 69;
+	int status;
 
 	thread_create(1, helloWorld, &test, &test2, &test3);
-	thread_create(2, helloWorld, &test, &test2, &test3);
-	sleep(15);
+	wait(&status);
+	//thread_create(2, helloWorld, &test, &test2, &test3);
+	//wait(&status);
+	//thread_create(3, helloWorld, &test, &test2, &test3);
+	//wait(&status);
 	//thread_create(2, helloWorld, 0);
 
 	//sleep(10);
@@ -37,5 +41,5 @@ int main(int argc, char **argv){
 	//	printf();
 	//}
 	printf("%d\n", g);
-	return 1;
+	exit(1);
 }

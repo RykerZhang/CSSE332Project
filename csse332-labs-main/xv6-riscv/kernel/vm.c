@@ -5,7 +5,6 @@
 #include "riscv.h"
 #include "defs.h"
 #include "fs.h"
-
 /*
  * the kernel's page table.
  */
@@ -14,6 +13,8 @@ pagetable_t kernel_pagetable;
 extern char etext[];  // kernel.ld sets this to end of kernel code.
 
 extern char trampoline[]; // trampoline.S
+
+extern void changeRef(int);
 
 // Make a direct-map page table for the kernel.
 pagetable_t
@@ -350,8 +351,15 @@ t_uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
     if(i == TRAPFRAME || i == TRAMPOLINE){
     	continue;
     }
+
+   // acquire(&kmem.lock);
     pa = PTE2PA(*pte);
     flags = PTE_FLAGS(*pte);
+    int index = FRINDEX(pa);
+    changeRef(index);
+
+
+    //release(&kmem.lock);
     //if((mem = kalloc()) == 0)
       //goto err;
     //memmove(mem, (char*)pa, PGSIZE);
