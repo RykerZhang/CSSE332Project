@@ -367,12 +367,12 @@ if ((np = allocproc()) == 0){
   safestrcpy(np->name, p->name, sizeof(p->name));
 
   pid = np->pid;
-
+	np->pid = id;
 
   np->trapframe->epc = (uint64)thread_function;
 	
 	
-	np->trapframe->sp = p->trapframe->sp - 128*id;
+	np->trapframe->sp = p->trapframe->sp - 1024*id;
 
   release(&np->lock);
 	
@@ -481,7 +481,7 @@ t_exit(int status)
   //reparent(p);
 
   // Parent might be sleeping in wait().
-  //wakeup(p->parent);
+  wakeup(p->parent);
   
   acquire(&p->lock);
 
@@ -532,6 +532,53 @@ wait(uint64 addr)
         }
         release(&pp->lock);
       }
+    }
+
+    // No point waiting if we don't have any children.
+    if(!havekids || killed(p)){
+      release(&wait_lock);
+      return -1;
+    }
+    
+    // Wait for a child to exit.
+    sleep(p, &wait_lock);  //DOC: wait-sleep
+  }
+}
+
+int
+thread_join(int tid)
+{
+  struct proc *pp;
+  int havekids, pid;
+  struct proc *p = myproc();
+
+  acquire(&wait_lock);
+
+  for(;;){
+    // Scan through table looking for exited children.
+    havekids = 0;
+
+    for(pp = proc; pp < &proc[NPROC]; pp++){
+
+      if(pp->parent == p){
+        // make sure the child isn't still in exit() or swtch().
+        acquire(&pp->lock);
+
+    	if(pp->pid == tid){
+        havekids = 1;
+        if(pp->state == ZOMBIE){
+          // Found one.
+          pid = pp->pid;
+          
+          freeproc(pp);
+          release(&pp->lock);
+          release(&wait_lock);
+          return pid;
+        }
+	}
+        release(&pp->lock);
+      
+    }
     }
 
     // No point waiting if we don't have any children.

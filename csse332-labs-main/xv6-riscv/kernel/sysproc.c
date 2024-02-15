@@ -119,3 +119,14 @@ uint64 sys_t_exit(void){
   t_exit(status);
   return 0;
 }
+
+
+uint64
+sys_thread_join(void)
+{
+  //uint64 p;
+  int tid;
+  argint(0, &tid);
+  //argaddr(1, &p);
+  return thread_join(tid);
+}

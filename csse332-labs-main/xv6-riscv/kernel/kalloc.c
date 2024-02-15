@@ -61,7 +61,9 @@ kfree(void *pa)
 	
   acquire(&kmem.lock);
   int index = FRINDEX((uint64)pa);
-  refcount[index]--;
+  if(refcount[index] > 0){
+  	refcount[index]--;
+  }
 	
   
   if(refcount[index] <= 0){

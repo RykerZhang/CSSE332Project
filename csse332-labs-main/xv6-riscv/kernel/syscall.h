@@ -23,3 +23,4 @@
 #define SYS_spoon  22
 #define SYS_thread_create 23
 #define SYS_t_exit 24
+#define SYS_thread_join 25

@@ -20,7 +20,7 @@ void helloWorld(void *arg, void *arg2, void *arg3){
 	printf("Hello world %d\n", hh);
 	hh = 1010;
 
-	exit(0);
+	t_exit(0);
 }
 
 void goodbyeWorld(void *arg, void *arg2, void *arg3){
@@ -39,16 +39,18 @@ void main(int argc, char **argv){
 	int test = 100;
 	int test2 = 79;
 	int test3 = 69;
-//	int status;
+        //int status;
 
-	thread_create(0, helloWorld, &test, &test2, &test3);
-	thread_create(0, goodbyeWorld, &test, &test2, &test3);
+	thread_create(1, helloWorld, &test, &test2, &test3);
+	//thread_create(2, goodbyeWorld, &test, &test2, &test3);
 	//wait(&status);
 	//thread_create(3, helloWorld, &test, &test2, &test3);
 	//wait(&status);
 	//thread_create(2, helloWorld, 0);
 
-	sleep(15);
+	//sleep(15);
+	thread_join(1);
+	//thread_join(2, 100);
 	//if(g == 8800){
 	//	printf();
 	//}
