@@ -14,7 +14,7 @@ int g = 8800;
 void helloWorld(void *arg, void *arg2, void *arg3){
 	//printf("arg1: %d arg2: %d arg3: %d\n", *(int *)arg, *(int *)arg2, *(int *)arg3);
 	//printf("child: %d:\n", g);
-	//g++;
+	g++;
 	//printf("child new %d:\n", g);
 	int hh = 1000;
 	printf("Hello world %d\n", hh);
@@ -26,7 +26,7 @@ void helloWorld(void *arg, void *arg2, void *arg3){
 void goodbyeWorld(void *arg, void *arg2, void *arg3){
 	//printf("arg1: %d arg2: %d arg3: %d\n", *(int *)arg, *(int *)arg2, *(int *)arg3);
 	//printf("child: %d:\n", g);
-	//g++;
+	g++;
 	//printf("child new %d:\n", g);
 	int hh = 0;
 	sleep(10);
@@ -50,7 +50,7 @@ void main(int argc, char **argv){
 
 	//sleep(15);
 	thread_join(1);
-	//thread_join(2, 100);
+	//thread_join(2);
 	//if(g == 8800){
 	//	printf();
 	//}

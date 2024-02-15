@@ -371,9 +371,26 @@ if ((np = allocproc()) == 0){
 
   np->trapframe->epc = (uint64)thread_function;
 	
-	
-	np->trapframe->sp = p->trapframe->sp - 1024*id;
+		
+	//np->trapframe->sp = p->trapframe->sp - 1024*id;
 
+	np->sz += PGSIZE;
+	char *stack = kalloc();
+	uint64 sp = PGROUNDUP(np->sz);
+	if(stack == 0){
+		freeproc(np);
+		np->sz -= PGSIZE;
+		return -1;
+	
+	}
+	if(mappages(np->pagetable, sp - PGSIZE, PGSIZE, (uint64)stack, PTE_R|PTE_W|PTE_X|PTE_V|PTE_U) < 0){
+		kfree(stack);
+		freeproc(np);
+		np->sz -= PGSIZE;
+		release(&np->lock);
+		return -1;
+	}
+	np->trapframe->sp = sp;
   release(&np->lock);
 	
 
