@@ -264,6 +264,7 @@ growproc(int n)
   struct proc *p = myproc();
 
   sz = p->sz;
+  if(!p->isThread){
   if(n > 0){
     if((sz = uvmalloc(p->pagetable, sz, sz + n, PTE_W)) == 0) {
       return -1;
@@ -272,6 +273,35 @@ growproc(int n)
     sz = uvmdealloc(p->pagetable, sz, sz + n);
   }
   p->sz = sz;
+  }else {
+  
+   if(n > 0){
+		
+	pagetable_t f = NULL;
+	pagetable_t s = NULL;
+	pagetable_t t = NULL;
+	if(p->parent->first){
+		f = p->parent->first->pagetable;
+	}
+	if(p->parent->second){
+		s = p->parent->second->pagetable;
+	}
+	if(p->parent->third){
+		t = p->parent->third->pagetable;
+	}
+
+    if((sz = t_uvmalloc(p->pagetable, sz, sz + n, PTE_W, f, s, t)) == 0) {
+      return -1;
+    }
+  } else if(n < 0){
+    sz = uvmdealloc(p->pagetable, sz, sz + n);
+  }
+  p->sz = sz;
+  
+  
+  }
+	
+
   return 0;
 }
 
@@ -345,7 +375,7 @@ if ((np = allocproc()) == 0){
     return -1;
   }
   np->sz = p->sz;
-
+	np->isThread = 1;
   // copy saved user registers.
   //*(np->trapframe) = *(p->trapframe);
 
@@ -402,6 +432,18 @@ if ((np = allocproc()) == 0){
 
   acquire(&wait_lock);
   np->parent = p;
+  
+	if(np->parent->third){
+	
+	
+	}else if(np->parent->second){
+		np->parent->third = p;
+	}else if(np->parent->first){
+		np->parent->second = p;
+	}else {
+		np->parent->first = p;
+	}
+
   release(&wait_lock);
 
   acquire(&np->lock);

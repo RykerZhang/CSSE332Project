@@ -250,6 +250,41 @@ uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
   return newsz;
 }
 
+
+uint64
+t_uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm, pagetable_t first, pagetable_t second, pagetable_t third)
+{
+  char *mem;
+  uint64 a;
+
+  if(newsz < oldsz)
+    return oldsz;
+
+  oldsz = PGROUNDUP(oldsz);
+  for(a = oldsz; a < newsz; a += PGSIZE){
+    mem = kalloc();
+    if(mem == 0){
+      uvmdealloc(pagetable, a, oldsz);
+      return 0;
+    }
+    memset(mem, 0, PGSIZE);
+    if(mappages(pagetable, a, PGSIZE, (uint64)mem, PTE_R|PTE_U|xperm) != 0){
+      kfree(mem);
+      uvmdealloc(pagetable, a, oldsz);
+      return 0;
+    }
+	//Alloctes pages of up to 3 threads
+    if(first){
+    	mappages(first, a, PGSIZE, (uint64)mem, PTE_R|PTE_U|xperm);
+    }if(second){
+    	mappages(second, a, PGSIZE, (uint64)mem, PTE_R|PTE_U|xperm);
+    }if(third){
+    	mappages(third, a, PGSIZE, (uint64)mem, PTE_R|PTE_U|xperm); 
+    } 
+  }
+  return newsz;
+}
+
 // Deallocate user pages to bring the process size from oldsz to
 // newsz.  oldsz and newsz need not be page-aligned, nor does newsz
 // need to be less than oldsz.  oldsz can be larger than the actual

@@ -167,6 +167,7 @@ int             mappages(pagetable_t, uint64, uint64, uint64, int);
 pagetable_t     uvmcreate(void);
 void            uvmfirst(pagetable_t, uchar *, uint);
 uint64          uvmalloc(pagetable_t, uint64, uint64, int);
+uint64 		t_uvmalloc(pagetable_t, uint64, uint64, int, pagetable_t, pagetable_t, pagetable_t);
 uint64          uvmdealloc(pagetable_t, uint64, uint64);
 int             uvmcopy(pagetable_t, pagetable_t, uint64);
 int             t_uvmcopy(pagetable_t, pagetable_t, uint64);
