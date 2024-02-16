@@ -350,13 +350,7 @@ if ((np = allocproc()) == 0){
   //*(np->trapframe) = *(p->trapframe);
 
   // Cause fork to return 0 in the child.
-  	np->trapframe->a0 = (uint64)arg;
-  	if(arg2 != NULL){
-  		np->trapframe->a1 = (uint64) arg2;
-  	}
-	if(arg3 != NULL){
-		np->trapframe->a2 = (uint64) arg3;
-	}
+
 
   // increment reference counts on open file descriptors.
   for(i = 0; i < NOFILE; i++)
@@ -365,7 +359,8 @@ if ((np = allocproc()) == 0){
   np->cwd = idup(p->cwd);
 
   safestrcpy(np->name, p->name, sizeof(p->name));
-
+	
+  //acquire(&np->lock);
   pid = np->pid;
 	np->pid = id;
 
@@ -391,6 +386,16 @@ if ((np = allocproc()) == 0){
 		return -1;
 	}
 	np->trapframe->sp = sp;
+
+
+
+	  	np->trapframe->a0 = (uint64)arg;
+  	if(arg2 != NULL){
+  		np->trapframe->a1 = (uint64) arg2;
+  	}
+	if(arg3 != NULL){
+		np->trapframe->a2 = (uint64) arg3;
+	}
   release(&np->lock);
 	
 

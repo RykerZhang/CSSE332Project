@@ -74,7 +74,22 @@ void test_func6(void *arg1){
 	t_exit(0);
 }
 
+void test_func7(void *arg1){
+	int a = *(int *)arg1;
+	sleep(5);
+	printf("Adress of local variable is: %ld: value is %d\n", &arg1, a);
+	t_exit(0);
+}
 
+void test_func8(void *arg1){
+	sleep(1);
+	int a = *(int *)arg1;
+	a = 2;
+	int *b = &a;
+	*b = 2;
+	printf("Adress of local variable is: %ld\n", &arg1);
+	t_exit(0);
+}
 void test_thread_create_1() {
         // Test 1
         // test if thread_create works
@@ -118,6 +133,14 @@ void test_thread_create_1() {
         thread_create(5, test_func6, NULL, NULL, NULL);
 	thread_join(5);
 
+	int var7 = 10;
+	
+	//int var8 = 10;
+
+ 	thread_create(6, test_func7,  &var7, NULL, NULL);
+	thread_create(7, test_func8,  &var7, NULL, NULL);
+	thread_join(6);
+	thread_join(7);
 }
 
 void main(int argc, char **argv){
