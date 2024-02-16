@@ -81,7 +81,7 @@ kfree(void *pa)
   r->next = kmem.freelist;
   kmem.freelist = r;
   } else {
-  	printf("\n%d\n", refcount[index]);
+  	//printf("\n%d\n", refcount[index]);
   }
 
   release(&kmem.lock);
