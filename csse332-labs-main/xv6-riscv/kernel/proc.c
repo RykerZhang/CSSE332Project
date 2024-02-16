@@ -264,6 +264,7 @@ growproc(int n)
   struct proc *p = myproc();
 
   sz = p->sz;
+  //chekcs if the proc is a thread
   if(!p->isThread){
   if(n > 0){
     if((sz = uvmalloc(p->pagetable, sz, sz + n, PTE_W)) == 0) {
@@ -274,7 +275,7 @@ growproc(int n)
   }
   p->sz = sz;
   }else {
-  
+  //If the proc is a thread calls the speical function t_uvmalloc instead.
    if(n > 0){
 		
 	pagetable_t f = NULL;
@@ -356,7 +357,7 @@ fork(void)
   return pid;
 }
 
-//
+//used to create a child retunrs the tid passed in to create it.
 int thread_create(int id, void *thread_function, void *arg, void  *arg2, void *arg3){
 struct proc *p = myproc();
 struct proc *np;
@@ -376,10 +377,7 @@ if ((np = allocproc()) == 0){
   }
   np->sz = p->sz;
 	np->isThread = 1;
-  // copy saved user registers.
-  //*(np->trapframe) = *(p->trapframe);
-
-  // Cause fork to return 0 in the child.
+  
 
 
   // increment reference counts on open file descriptors.
@@ -420,6 +418,7 @@ if ((np = allocproc()) == 0){
 
 
 	  	np->trapframe->a0 = (uint64)arg;
+		//handles the 2 other optinal paramters
   	if(arg2 != NULL){
   		np->trapframe->a1 = (uint64) arg2;
   	}
@@ -432,7 +431,7 @@ if ((np = allocproc()) == 0){
 
   acquire(&wait_lock);
   np->parent = p;
-  
+ 	//assigns the first 3 threads created by the main thraed. 
 	if(np->parent->third){
 	
 	
@@ -542,6 +541,10 @@ t_exit(int status)
   acquire(&wait_lock);
 
   // Give any children to init.
+  
+  
+  //Removed reparting since we want our thrads to die is main thread dies.
+  
   //reparent(p);
 
   // Parent might be sleeping in wait().
@@ -627,7 +630,7 @@ thread_join(int tid)
       if(pp->parent == p){
         // make sure the child isn't still in exit() or swtch().
         acquire(&pp->lock);
-
+	//checks if we are waiting for the right child.
     	if(pp->pid == tid){
         havekids = 1;
         if(pp->state == ZOMBIE){

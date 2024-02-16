@@ -393,7 +393,9 @@ t_uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
     flags = PTE_FLAGS(*pte);
     int index = FRINDEX(pa);
     changeRef(index);
+	
 
+    //removed the following code becaue we do not need to create new memory since they share memory. 
 
     //release(&kmem.lock);
     //if((mem = kalloc()) == 0)
